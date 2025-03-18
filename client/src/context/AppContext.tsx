@@ -29,7 +29,7 @@ interface AppContextType {
   leaveLoading: boolean;
   leaveError: string | null;
   getLeaveRequests: () => void;
-  updateLeaveStatus: (id: string, status: string) => void;
+  updateLeaveStatus: (id: string, status: string) => void;  
  
 };
 

@@ -21,3 +21,5 @@ export const registerSchema = loginSchema
     message: "Passwords do not match",
     path: ["confirmPassword"],
   });
+
+  

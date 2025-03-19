@@ -1,79 +1,91 @@
+import asyncHandler from "express-async-handler";
+import { STATUS_CODE } from "../constants/constants.js";
+import HttpError from "../utils/httpError.js";
 import bcrypt from 'bcryptjs';
 import  jwt  from 'jsonwebtoken';
 import userModel from '../models/userModels.js';
 import transporter from '../config/nodeMailer.js';
+import { register } from "../service/authService.js";
 
-export const register = async(req, res) =>{
+export const registerHandler = async(req, res, next) =>{
+
+    const userModel = register(req.body);
     
-    const {name, email, password, dob, gender, maritalStatus, internId} = req.body;
 
-    if(!name || !email || !password || !dob || !internId){
 
-        return res.json({success: false, message: 'Missing Details'});
+    
+    // const {name, email, password, dob, gender, maritalStatus, internId} = req.body;
+
+    // if(!name || !email || !password || !dob || !internId){
+
+    //     return res.json({success: false, message: 'Missing Details'});
         
-    }
+    // }
     
-    try{
+    // try{
 
-        const existingUser = await userModel.findOne({email}); //check the existing user by email, checks if the user exists
+    //     const existingUser = await userModel.findOne({email}); //check the existing user by email, checks if the user exists
          
-             if(existingUser){
-                return res.json({success: false, message: 'user already exists'}) //if the user already exists return the message: return user alraedy exist
-             }
+    //          if(existingUser){
+    //             return res.json({success: false, message: 'user already exists'}) //if the user already exists return the message: return user alraedy exist
+    //          }
 
-             const getInitials = (name) => {
-                return name
-                    .split(' ')
-                    .map(word => word.charAt(0).toUpperCase())
-                    .join('');
-            };
+    //          const getInitials = (name) => {
+    //             return name
+    //                 .split(' ')
+    //                 .map(word => word.charAt(0).toUpperCase())
+    //                 .join('');
+    //         };
     
-            const initials = getInitials(name);
+    //         const initials = getInitials(name);
             
-             const hashPassword = await bcrypt.hash(password, 10); //it uses 10 salt rounds(salt rounds refers to how many time the hashing algorithms is applied to the password and the salt(while salt refers to random data added to a password before hashing it))
+    //          const hashPassword = await bcrypt.hash(password, 10); //it uses 10 salt rounds(salt rounds refers to how many time the hashing algorithms is applied to the password and the salt(while salt refers to random data added to a password before hashing it))
              
-             const user = new userModel({
-                name, 
-                email, 
-                password: hashPassword, 
-                dob,
-                gender,
-                maritalStatus,
-                internId,
-                initials
-            }); //now we are creating new user from userModel with name, email, password(but on the password we use the hashed password), then after save the new user to the database
+    //          const user = new userModel({
+    //             name, 
+    //             email, 
+    //             password: hashPassword, 
+    //             dob,
+    //             gender,
+    //             maritalStatus,
+    //             internId,
+    //             initials
+    //         }); //now we are creating new user from userModel with name, email, password(but on the password we use the hashed password), then after save the new user to the database
           
-             await user.save(); //save the user in the database
+    //          await user.save(); //save the user in the database
              
              
              
 
-            const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '7d'});
+    //         const token = jwt.sign({id: user._id}, process.env.JWT_SECRET, {expiresIn: '7d'});
 
 
-            res.cookie('token', token, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
-                maxAge: 7 * 24 * 60  * 60 * 1000 
-            });
+    //         res.cookie('token', token, {
+    //             httpOnly: true,
+    //             secure: process.env.NODE_ENV === 'production',
+    //             sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+    //             maxAge: 7 * 24 * 60  * 60 * 1000 
+    //         });
 
-            const mailOptions = {
-                from: process.env.SENDER_EMAIL,
-                to: email,
-                subject: 'Welcome to Our Website',
-                text: `Welcome to our website. Your account has been created with email id: ${email}. Use ${password} to login`
-            }
+    //         const mailOptions = {
+    //             from: process.env.SENDER_EMAIL,
+    //             to: email,
+    //             subject: 'Welcome to Our Website',
+    //             text: `Welcome to our website. Your account has been created with email id: ${email}. Use ${password} to login`
+    //         }
             
-            await transporter.sendMail(mailOptions);
+    //         await transporter.sendMail(mailOptions);
             
 
-            return res.status(201).json({success: true, message: 'User registered successfully' })
+    //          res.status(STATUS_CODE.CREATED).json({status: 'User registered successfully', data })
             
-        }catch(error){
+    //     }catch(error){
 
-        res.json({sucess: false, message: error.message})
-    }
+    //     res.json({sucess: false, message: error.message})
+
+    // }
+
+
 }
 
 

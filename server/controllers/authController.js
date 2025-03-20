@@ -9,7 +9,10 @@ import { register } from "../service/authService.js";
 
 export const registerHandler = async(req, res, next) =>{
 
-    const userModel = register(req.body);
+    const user = await register(req.body);
+    
+
+    await generateToken(user, res);
     
 
 

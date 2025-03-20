@@ -1,34 +1,63 @@
 import jwt from 'jsonwebtoken';
+import userModel from '../models/userModels';
+import asyncHandler from "express-async-handler";
+import HttpError from '../utils/httpError';
+import { STATUS_CODE } from '../constants/constants';
 
 
-const userAuth = async(req, res, next)=>{
+const userAuth = asyncHandler(async(req, res, next)=>{
     const token = req.cookies.token; 
 
      console.log('Token:', token); 
 
     if(!token){
-        return res.json({success: false, message: 'Not Authorized. Login Again'})
+      return next(new HttpError("Not authorized, no token", STATUS_CODE.BAD_REQUEST.UNAUTHORIZED));
     }
-    
-    try{
-        
-        const tokenDecoded =  jwt.verify(token, process.env.JWT_SECRET);
 
-        console.log('Decoded Token:', tokenDecoded);
-        if(tokenDecoded.id){
+      const decoded = jwt.decode(token);
 
-            req.user = {id: tokenDecoded.id};
-        }else{
-            return res.json({success: false, message: 'Not Authorized'})
-        }
-         next(); 
+      if(!decoded || !decoded.id){
+        next(
+            new HttpError("Not authorized, invalid token", STATUS_CODE.UNAUTHORIZED)
+        );
+      }
 
-    }catch(error){
-        res.json({success: false, message: error.message});
+      const user = await userModel.findById(decoded.id).select("-password");
 
-    }
-}
-export default userAuth;
+      if(!user){
+        next(new HttpError("Not authorized", STATUS_CODE.NOT_FOUND ));
+      }
+
+      const jwtSecret = user.jwt_secret;
+
+      if(jwtSecret){
+        next(
+            new HttpError(
+                 "Server error: User jwt_secret missing",
+                 STATUS_CODE.SERVER_ERROR
+
+            )
+        );
+      }
+
+      try{
+        jwt.verify(token, jwtSecret);
+        req.user=user;
+        next();
+      }catch(verificationError){
+        return next(new HttpError("Not authorized, invalid token", STATUS_CODE.UNAUTHORIZED));
+      }
+    });
+    const authorizeRoles = (...allowedRoles) =>{
+        return (req, res, next) => {
+            if (!req.user || !allowedRoles.includes(req.user.role)) {
+              return next(new HttpError("Not authorized", STATUS_CODE.FORBIDDEN));
+            }
+            next(); 
+          };
+    } 
+
+export default {userAuth, authorizeRoles } 
 
 
 

@@ -7,12 +7,76 @@ import userModel from '../models/userModels.js';
 import transporter from '../config/nodeMailer.js';
 import { register } from "../service/authService.js";
 
-export const registerHandler = async(req, res, next) =>{
-
-    const user = await register(req.body);
+export const registerHandler = asyncHandler(async (req, res, next) => {
     
-
+    const user = await register(req.body);
+  
     await generateToken(user, res);
+  
+    //
+    const data = new userModel(user).omitField(["jwt_secret", "password"]);
+  
+    res.status(STATUS_CODE.CREATED).json({
+      status: "User succefully registered",
+      data,
+    });
+  });
+
+export const loginHandler = asyncHandler(async (req, res, next) => {
+    const user = await login(req.body); 
+  
+    const { accessToken, refreshToken } = await generateToken(user, res);
+  
+    const data = new userModel(user).omitField(["jwt_secret", "password"]);
+  
+    res.status(200).json({
+      status: "User successfully logged alright",
+      accessToken,
+      refreshToken,
+      role: user.role,
+    });
+  });
+  export const logoutHandler = asyncHandler(async (req, res, next) => {
+    clearAuthCookies(res);
+    res.status(OK).json({
+      status: "Logout Handler",
+    });
+  });
+  export const refreshToken = asyncHandler(async (req, res) => {
+    const refreshToken = req.cookies.refreshToken; 
+  
+    if (!refreshToken) {
+      return res.status(UNAUTHORIZED).json({
+        message: "Refresh token missing",
+      }); 
+    }
+  
+   
+    const user = await userModel.findOne({
+      refreshToken,
+    });
+  
+    if (!user) {
+      return res.status(FORBIDDEN).json({
+        message: "Invalid refresh token",
+      }); 
+    }
+  
+   
+    const accessToken = generateAccessToken(user);
+    const newRefreshToken = await generateRefreshToken(user);
+  
+  
+    user.refreshToken = newRefreshToken;
+    await user.save();
+  
+   
+    setAuthCookies(res, accessToken, newRefreshToken);
+  
+    res.status(200).json({
+      message: "Tokens refreshed successfully",
+    });
+  });
     
 
 
@@ -89,11 +153,11 @@ export const registerHandler = async(req, res, next) =>{
     // }
 
 
-}
+
 
 
 //Controller for login
-export const login = async(req, res) =>{
+/*export const login = async(req, res) =>{
 
     const {email, password} = req.body;
     
@@ -379,5 +443,6 @@ export const resetPassword = async (req, res) =>{
      
 
 }
+*/
 
 

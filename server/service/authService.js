@@ -1,5 +1,9 @@
 import userModel from "../models/userModels";
 import { STATUS_CODE } from "../constants/constants";
+import HttpError from "../utils/httpError.js"
+//import jwt from "jsonwebtoken";
+//import crypto from "crypto";
+
 import bcrypt from 'bcryptjs';
 
 
@@ -15,13 +19,39 @@ export const register = async(UseData) =>{
    const existingUser = await userModel.findOne({ email });
 
    if(existingUser){
-      throw new ("User already exist",STATUS_CODE.CONFLICT);
+      throw new HttpError("User already exist",STATUS_CODE.CONFLICT);
    }
 
-   const newUser = userModel.create({
-    name, email, password, dob, gender, maritalStatus, internId
+   const jwt_secret = crypto.randomBytes(32).toString("hex");
 
-   })
+   const hashedPassword = await bcrypt.hash(password, 12);
+
+   const newUser = await userModel.create({
+    name,
+    email, 
+    password: hashedPassword,
+    dob, 
+    gender, 
+    maritalStatus, 
+    internId
+
+   });
+
+
    return newUser;
+
+}
+
+export const login = async(req, next) =>{
+   const {email, password } = req.body;
+
+   const user = await userModel.findOne({ email });
+
+   if(!user || !(await user.comparePasswords(password))){
+      return next(new HttpError("Incorrect email or password"),STATUS_CODE.UNAUTHORIZED);
+   }
+   const { password: userPassword, ...userWithoutPassword } = user.toObject();
+
+   return userWithoutPassword;
 
 }

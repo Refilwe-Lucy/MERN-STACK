@@ -1,9 +1,16 @@
-//import { isCancel } from "axios";
+
 import userModel from "../models/userModels.js";
-//import  jwt  from 'jsonwebtoken';
+//import asyncHandler from "express-async-handler"
+import { deleteOne, getAllDocs, getOne, updateOne } from "../service/crudHanlder.js";
+
+export const getAllUsers = getAllDocs(userModel);
+export const getUsers = getOne(userModel);
+export const deleteUser = deleteOne(userModel);
+export const updateUser = updateOne(userModel)
 
 
-export const getUserProfile = async (req, res) => {
+
+/*export const getUserProfile = async (req, res) => {
   try {
     
     const userId = req.params.id;
@@ -102,6 +109,7 @@ export const getIntern = async (req, res) => {
       return res.status(500).json({ success: false, message: error.message });
     }
   };
+  */
   
   
 

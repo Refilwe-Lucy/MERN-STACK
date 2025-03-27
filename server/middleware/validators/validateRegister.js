@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler"
-import { registerSchema } from "../../schemas/authSchemas"
+import { registerSchema } from "../../schemas/authSchemas.js";
 
 export const validateRegister = asyncHandler(async(req, res, next) =>{
     const results = registerSchema.safeParse(req.body);

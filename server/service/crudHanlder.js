@@ -1,6 +1,6 @@
 import asyncHandler from "express-async-handler";
-import HttpError from "../utils/httpError";
-import { STATUS_CODE } from "../constants/constants";
+import HttpError from "../utils/httpError.js";
+import { STATUS_CODE } from "../constants/constants.js";
 
 
 export const deleteOne = (Model) =>

@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler";
-import { loginSchema } from "../../schemas/authSchemas";
+import { loginSchema } from "../../schemas/authSchemas.js";
 
 
 const validateLogin = asyncHandler(async(req,res,next) =>{

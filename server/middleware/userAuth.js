@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
-import userModel from '../models/userModels';
+import userModel from '../models/userModels.js';
 import asyncHandler from "express-async-handler";
-import HttpError from '../utils/httpError';
-import { STATUS_CODE } from '../constants/constants';
+import HttpError from '../utils/httpError.js';
+import { STATUS_CODE } from '../constants/constants.js';
 
 
 const userAuth = asyncHandler(async(req, res, next)=>{

@@ -1,5 +1,5 @@
-import userModel from "../models/userModels";
-import { STATUS_CODE } from "../constants/constants";
+import userModel from "../models/userModels.js";
+import { STATUS_CODE } from "../constants/constants.js";
 import HttpError from "../utils/httpError.js"
 //import jwt from "jsonwebtoken";
 //import crypto from "crypto";

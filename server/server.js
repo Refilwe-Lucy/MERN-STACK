@@ -4,7 +4,7 @@ import 'dotenv/config';
 import cookieParse from "cookie-parser";
 import connectDB from "./config/db.js";
 import authRouter from './routes/authRoutes.js'
-import userRouter from "./routes/userRoutes.js";
+//import userRouter from "./routes/userRoutes.js";
 // import adminRoutes from './routes/adminRoutes.js';
 //import authRoutes from "./routes/authRoutes.js";
 import leaveRoutes from "./routes/leaveRequestRoutes.js";
@@ -24,8 +24,8 @@ app.use(cors({origin: allowedOrigins, credentials: true})) //So we can send the 
 
 //API Endpoints
 app.get('/', (req,res) =>res.send("Server is ready")); //route in an Express App. set up a route that listens for GET requets at '/' URL. 
-app.use('/api/login', authRouter);
-app.use('/api/user', userRouter);
+app.use('/api/auth', authRouter);
+//app.use('/api/user', userRouter);
 app.use('/api/leave', leaveRoutes)
 
 app.listen(port, () => console.log(`Server started on PORT:${port}`)); //wheneedver we start the backend the message 'server started on PORT' will be display in the terminal

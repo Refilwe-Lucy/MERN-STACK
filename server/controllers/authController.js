@@ -1,10 +1,10 @@
 import asyncHandler from "express-async-handler";
 import { STATUS_CODE } from "../constants/constants.js";
-import HttpError from "../utils/httpError.js";
-import bcrypt from 'bcryptjs';
-import  jwt  from 'jsonwebtoken';
+//import HttpError from "../utils/httpError.js";
+//import bcrypt from 'bcryptjs';
+//import  jwt  from 'jsonwebtoken';
 import userModel from '../models/userModels.js';
-import transporter from '../config/nodeMailer.js';
+//import transporter from '../config/nodeMailer.js';
 import { register } from "../service/authService.js";
 
 export const registerHandler = asyncHandler(async (req, res, next) => {

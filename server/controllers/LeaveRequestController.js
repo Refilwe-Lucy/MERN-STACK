@@ -1,4 +1,4 @@
-import LeaveRequest from "../models/LeaveRequestModel.js";
+/*import LeaveRequest from "../models/LeaveRequestModel.js";
 //import userModel from "../models/userModels.js";
 
 export const createLeaveRequest = async (req, res) =>{
@@ -93,4 +93,4 @@ export const approveRejectLeave  = async (req, res) =>{
     
 }
 
-
+*/

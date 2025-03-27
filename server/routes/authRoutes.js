@@ -2,7 +2,7 @@ import express from 'express';
 import validateRegister from '../middleware/validators/validateRegister.js';
 import validateLogin from "../middleware/validators/validateLogin.js"
 
-import userAuth from '../middleware/userAuth.js';
+//import userAuth from '../middleware/userAuth.js';
 import { loginHandler, logoutHandler, registerHandler } from '../controllers/authController.js';
 
 
@@ -12,7 +12,7 @@ const authRoutes = express.Router();
 
 authRoutes.post("/register", validateRegister, registerHandler);
 authRoutes.post("/login", validateLogin, loginHandler);
-authRoutes.get("/logout", userAuth, logoutHandler);
+authRoutes.get("/logout", logoutHandler);
 
 /*
 

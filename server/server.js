@@ -7,7 +7,7 @@ import authRouter from './routes/authRoutes.js'
 //import userRouter from "./routes/userRoutes.js";
 // import adminRoutes from './routes/adminRoutes.js';
 //import authRoutes from "./routes/authRoutes.js";
-import leaveRoutes from "./routes/leaveRequestRoutes.js";
+//import leaveRoutes from "./routes/leaveRequestRoutes.js";
 
 
 const app = express();
@@ -26,8 +26,7 @@ app.use(cors({origin: allowedOrigins, credentials: true})) //So we can send the 
 app.get('/', (req,res) =>res.send("Server is ready")); //route in an Express App. set up a route that listens for GET requets at '/' URL. 
 app.use('/api/auth', authRouter);
 //app.use('/api/user', userRouter);
-app.use('/api/leave', leaveRoutes)
-
+//app.use('/api/leave', leaveRoutes);
 app.listen(port, () => console.log(`Server started on PORT:${port}`)); //wheneedver we start the backend the message 'server started on PORT' will be display in the terminal
 
 
